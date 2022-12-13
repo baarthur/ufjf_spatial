@@ -1,0 +1,1166 @@
+[
+	{
+		"id": "colonescuPrinciplesEconometrics",
+		"type": "book",
+		"abstract": "This is a beginner’s guide to applied econometrics using the free statistics software R.",
+		"source": "bookdown.org",
+		"title": "Principles of Econometrics with R",
+		"URL": "https://bookdown.org/ccolonescu/RPoE4/",
+		"author": [
+			{
+				"family": "Colonescu",
+				"given": "Constantin"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2020",
+					9,
+					7
+				]
+			]
+		}
+	},
+	{
+		"id": "shikidaExemplo2SLSEm2014",
+		"type": "post-weblog",
+		"container-title": "De Gustibus Non Est Disputandum",
+		"language": "Português",
+		"note": "tex.ids: shikida2014",
+		"title": "Exemplo de 2SLS em R (Momento R do Dia)",
+		"title-short": "Exemplo de 2SLS em R",
+		"URL": "https://gustibuseconomia.com/2014/03/10/exemplo-de-2sls-em-r-momento-r-do-dia/",
+		"author": [
+			{
+				"family": "Shikida",
+				"given": "Cláudio"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2020",
+					9,
+					6
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2014",
+					3,
+					10
+				]
+			]
+		}
+	},
+	{
+		"id": "RobustRegressionData",
+		"type": "webpage",
+		"title": "Robust Regression | R Data Analysis Examples",
+		"URL": "https://stats.idre.ucla.edu/r/dae/robust-regression/",
+		"accessed": {
+			"date-parts": [
+				[
+					"2020",
+					9,
+					7
+				]
+			]
+		}
+	},
+	{
+		"id": "wooldridge2016",
+		"type": "book",
+		"call-number": "330.015195",
+		"edition": "6",
+		"event-place": "São  Paulo",
+		"ISBN": "978-85-221-2564-7",
+		"language": "Português",
+		"number-of-pages": "848",
+		"number-of-volumes": "1",
+		"publisher": "Cengage Learning",
+		"publisher-place": "São  Paulo",
+		"title": "Introdução à econometria: uma abordagem moderna",
+		"title-short": "Introdução à econometria",
+		"author": [
+			{
+				"family": "Wooldridge",
+				"given": "Jeffrey"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2016"
+				]
+			]
+		}
+	},
+	{
+		"id": "almeida2012",
+		"type": "book",
+		"call-number": "330.015195",
+		"edition": "1",
+		"event-place": "Campinas",
+		"ISBN": "978-85-7516-601-7",
+		"language": "Português",
+		"number-of-pages": "498",
+		"number-of-volumes": "1",
+		"publisher": "Alínea",
+		"publisher-place": "Campinas",
+		"title": "Econometria Espacial Aplicada",
+		"author": [
+			{
+				"family": "Almeida",
+				"given": "Eduardo"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2012"
+				]
+			]
+		}
+	},
+	{
+		"id": "gujarati2011a",
+		"type": "book",
+		"ISBN": "978-85-8055-051-1",
+		"language": "Portuguese",
+		"note": "OCLC: 880434695",
+		"source": "Open WorldCat",
+		"title": "Econometria básica",
+		"URL": "http://site.ebrary.com/id/10839762",
+		"author": [
+			{
+				"family": "Gujarati",
+				"given": "Damodar N"
+			},
+			{
+				"family": "Porter",
+				"given": "Dawn C"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					13
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2011"
+				]
+			]
+		}
+	},
+	{
+		"id": "johnston1971",
+		"type": "book",
+		"edition": "1",
+		"event-place": "São Paulo",
+		"language": "Português",
+		"number-of-pages": "318",
+		"publisher": "Atlas",
+		"publisher-place": "São Paulo",
+		"title": "Métodos Econométricos",
+		"author": [
+			{
+				"family": "Johnston",
+				"given": "John"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1971"
+				]
+			]
+		}
+	},
+	{
+		"id": "shapiro1965",
+		"type": "article-journal",
+		"container-title": "Biometrika",
+		"DOI": "10.1093/biomet/52.3-4.591",
+		"ISSN": "0006-3444, 1464-3510",
+		"issue": "3-4",
+		"journalAbbreviation": "Biometrika",
+		"language": "en",
+		"page": "591-611",
+		"source": "DOI.org (Crossref)",
+		"title": "An analysis of variance test for normality (complete samples)",
+		"URL": "https://academic.oup.com/biomet/article-lookup/doi/10.1093/biomet/52.3-4.591",
+		"volume": "52",
+		"author": [
+			{
+				"family": "Shapiro",
+				"given": "S. S."
+			},
+			{
+				"family": "Wilk",
+				"given": "M. B."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					7,
+					21
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1965",
+					12,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "croissant2008",
+		"type": "article-journal",
+		"container-title": "Journal of Statistical Software",
+		"DOI": "10.18637/jss.v027.i02",
+		"issue": "2",
+		"page": "1–43",
+		"title": "Panel data econometrics in R: The plm package",
+		"volume": "27",
+		"author": [
+			{
+				"family": "Croissant",
+				"given": "Yves"
+			},
+			{
+				"family": "Millo",
+				"given": "Giovanni"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2008"
+				]
+			]
+		}
+	},
+	{
+		"id": "junior2019",
+		"type": "article-journal",
+		"language": "pt",
+		"page": "12",
+		"source": "Zotero",
+		"title": "PESOS LONGITUDINAIS PARA A PESQUISA NACIONAL POR AMOSTRA DE DOMICÍLIOS CONTÍNUA (PNAD CONTÍNUA)",
+		"author": [
+			{
+				"family": "Júnior",
+				"given": "Antônio Etevaldo Teixeira"
+			},
+			{
+				"family": "Rosseti",
+				"given": "Eduardo Santiago"
+			},
+			{
+				"family": "Almeida",
+				"given": "Paula Alves",
+				"non-dropping-particle": "de"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2019"
+				]
+			]
+		}
+	},
+	{
+		"id": "hansen2022",
+		"type": "book",
+		"abstract": "\"An introductory PhD-level textbook for one of the first and most foundational courses every economics graduate student must take\"--",
+		"call-number": "HB139 .H3636 2022",
+		"event-place": "Princeton",
+		"ISBN": "978-0-691-23589-9",
+		"publisher": "Princeton University Press",
+		"publisher-place": "Princeton",
+		"source": "Library of Congress ISBN",
+		"title": "Econometrics",
+		"author": [
+			{
+				"family": "Hansen",
+				"given": "Bruce E."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2022"
+				]
+			]
+		}
+	},
+	{
+		"id": "procopio2022",
+		"type": "book",
+		"source": "bookdown.org",
+		"title": "Econometria com Simulação e Visualização de Dados",
+		"URL": "https://bookdown.org/igorvprocopio/Econometria/",
+		"author": [
+			{
+				"family": "Procópio",
+				"given": "Igor"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					5,
+					27
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022"
+				]
+			]
+		}
+	},
+	{
+		"id": "kuminoff2020",
+		"type": "speech",
+		"abstract": "This video explains the concept of asymptotic normality.",
+		"event-place": "Arizona State University",
+		"publisher-place": "Arizona State University",
+		"title": "Large Sample Inference: 2. Asymptotic Normality",
+		"title-short": "Large Sample Inference",
+		"URL": "https://www.youtube.com/watch?v=dBB_atu-1QM",
+		"author": [
+			{
+				"family": "Kuminoff",
+				"given": "Nicolai V."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					6,
+					29
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					8,
+					7
+				]
+			]
+		}
+	},
+	{
+		"id": "wooldridge2010",
+		"type": "book",
+		"call-number": "HB139 .W663 2010",
+		"edition": "2nd ed",
+		"event-place": "Cambridge, Mass",
+		"ISBN": "978-0-262-23258-6",
+		"note": "OCLC: ocn627701062",
+		"number-of-pages": "1064",
+		"publisher": "MIT Press",
+		"publisher-place": "Cambridge, Mass",
+		"source": "Library of Congress ISBN",
+		"title": "Econometric analysis of cross section and panel data",
+		"author": [
+			{
+				"family": "Wooldridge",
+				"given": "Jeffrey M."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2010"
+				]
+			]
+		}
+	},
+	{
+		"id": "cunningham2021",
+		"type": "book",
+		"abstract": "An accessible and contemporary introduction to the methods for determining cause and effect in the social sciences Causal inference encompasses the tools that allow social scientists to determine what causes what. Economists--who generally can't run controlled experiments to test and validate their hypotheses--apply these tools to observational data to make connections. In a messy world, causal inference is what helps establish the causes and effects of the actions being studied, whether the impact (or lack thereof) of increases in the minimum wage on employment, the effects of early childhood education on incarceration later in life, or the introduction of malaria nets in developing regions on economic growth. Scott Cunningham introduces students and practitioners to the methods necessary to arrive at meaningful answers to the questions of causation, using a range of modeling techniques and coding instructions for both the R and Stata programming languages. - -",
+		"call-number": "Q175.32.C38 C86 2021",
+		"event-place": "New Haven ; London",
+		"ISBN": "978-0-300-25168-5",
+		"language": "en",
+		"note": "OCLC: on1146568673",
+		"number-of-pages": "572",
+		"publisher": "Yale University Press",
+		"publisher-place": "New Haven ; London",
+		"source": "Library of Congress ISBN",
+		"title": "Causal inference: the mixtape",
+		"title-short": "Causal inference",
+		"author": [
+			{
+				"family": "Cunningham",
+				"given": "Scott"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "casella2002",
+		"type": "book",
+		"call-number": "QA276 .C37 2002",
+		"edition": "2nd ed",
+		"event-place": "Australia ; Pacific Grove, CA",
+		"ISBN": "978-0-534-24312-8",
+		"number-of-pages": "660",
+		"publisher": "Thomson Learning",
+		"publisher-place": "Australia ; Pacific Grove, CA",
+		"source": "Library of Congress ISBN",
+		"title": "Statistical inference",
+		"author": [
+			{
+				"family": "Casella",
+				"given": "George"
+			},
+			{
+				"family": "Berger",
+				"given": "Roger L."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2002"
+				]
+			]
+		}
+	},
+	{
+		"id": "hansen2022b",
+		"type": "book",
+		"abstract": "\"A comprehensive introduction to probability and statistics through the perspective of applying it to economic analysis\"--",
+		"call-number": "HB139 .H3638 2022",
+		"event-place": "Princeton",
+		"ISBN": "978-0-691-23594-3",
+		"publisher": "Princeton University Press",
+		"publisher-place": "Princeton",
+		"source": "Library of Congress ISBN",
+		"title": "Probability and statistics for economists",
+		"author": [
+			{
+				"family": "Hansen",
+				"given": "Bruce E."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2022"
+				]
+			]
+		}
+	},
+	{
+		"id": "angrist2009",
+		"type": "book",
+		"call-number": "HB139 .A54 2009",
+		"event-place": "Princeton",
+		"ISBN": "978-0-691-12034-8",
+		"note": "OCLC: ocn231586808",
+		"number-of-pages": "373",
+		"publisher": "Princeton University Press",
+		"publisher-place": "Princeton",
+		"source": "Library of Congress ISBN",
+		"title": "Mostly harmless econometrics: an empiricist's companion",
+		"title-short": "Mostly harmless econometrics",
+		"author": [
+			{
+				"family": "Angrist",
+				"given": "Joshua David"
+			},
+			{
+				"family": "Pischke",
+				"given": "Jörn-Steffen"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2009"
+				]
+			]
+		}
+	},
+	{
+		"id": "mitnews2021",
+		"type": "webpage",
+		"abstract": "MIT professor Joshua Angrist awarded the Nobel Prize in Economics. He shares the award with David Card of the University of California at Berkeley, and Guido Imbens of the Stanford Graduate School of Business.",
+		"container-title": "MIT News | Massachusetts Institute of Technology",
+		"language": "en",
+		"title": "MIT economist Joshua Angrist shares Nobel Prize",
+		"URL": "https://news.mit.edu/2021/mit-economist-joshua-angrist-shares-nobel-prize-1011",
+		"author": [
+			{
+				"family": "MIT News",
+				"given": ""
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					8,
+					16
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					10,
+					11
+				]
+			]
+		}
+	},
+	{
+		"id": "patino2018",
+		"type": "article-journal",
+		"container-title": "Jornal Brasileiro de Pneumologia",
+		"DOI": "10.1590/s1806-37562018000000164",
+		"ISSN": "1806-3756, 1806-3713",
+		"issue": "3",
+		"journalAbbreviation": "J. bras. pneumol.",
+		"page": "183-183",
+		"source": "DOI.org (Crossref)",
+		"title": "Internal and external validity: can you apply research study results to your patients?",
+		"title-short": "Internal and external validity",
+		"URL": "http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1806-37132018000300183&lng=en&tlng=en",
+		"volume": "44",
+		"author": [
+			{
+				"family": "Patino",
+				"given": "Cecilia Maria"
+			},
+			{
+				"family": "Ferreira",
+				"given": "Juliana Carvalho"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					8,
+					17
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					5
+				]
+			]
+		}
+	},
+	{
+		"id": "card1993",
+		"type": "report",
+		"event-place": "Cambridge, MA",
+		"language": "en",
+		"note": "DOI: 10.3386/w4483",
+		"number": "w4483",
+		"page": "w4483",
+		"publisher": "National Bureau of Economic Research",
+		"publisher-place": "Cambridge, MA",
+		"source": "DOI.org (Crossref)",
+		"title": "Using Geographic Variation in College Proximity to Estimate the Return to Schooling",
+		"URL": "http://www.nber.org/papers/w4483.pdf",
+		"author": [
+			{
+				"family": "Card",
+				"given": "David"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					8,
+					17
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1993",
+					10
+				]
+			]
+		}
+	},
+	{
+		"id": "menezesfilho2017",
+		"type": "book",
+		"edition": "3",
+		"event-place": "São Paulo",
+		"ISBN": "978-85-66932-31-7",
+		"language": "pt-BR",
+		"number-of-pages": "254",
+		"publisher": "Fundação Itaú Social",
+		"publisher-place": "São Paulo",
+		"title": "Avaliação econômica de projetos sociais",
+		"author": [
+			{
+				"family": "Menezes Filho",
+				"given": "Naercio Aquino",
+				"dropping-particle": "de"
+			},
+			{
+				"family": "Pinto",
+				"given": "Cristiane Campos de Xavier"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2017"
+				]
+			]
+		}
+	},
+	{
+		"id": "wikipedia2022a",
+		"type": "entry-encyclopedia",
+		"abstract": "A quasi-experiment is an empirical interventional study used to estimate the causal impact of an intervention on target population without random assignment. Quasi-experimental research shares similarities with the traditional experimental design or randomized controlled trial, but it specifically lacks the element of random assignment to treatment or control. Instead, quasi-experimental designs typically allow the researcher to control the assignment to the treatment condition, but using some criterion other than random assignment (e.g., an eligibility cutoff mark).Quasi-experiments are subject to concerns regarding internal validity, because the treatment and control groups may not be comparable at baseline. In other words, it may not be possible to convincingly demonstrate a causal link between the treatment condition and observed outcomes. This is particularly true if there are confounding variables that cannot be controlled or accounted for.With random assignment, study participants have the same chance of being assigned to the intervention group or the comparison group. As a result, differences between groups on both observed and unobserved characteristics would be due to chance, rather than to a systematic factor related to treatment (e.g., illness severity). Randomization itself does not guarantee that groups will be equivalent at baseline. Any change in characteristics post-intervention is likely attributable to the intervention.",
+		"container-title": "Wikipedia",
+		"language": "en",
+		"license": "Creative Commons Attribution-ShareAlike License",
+		"note": "Page Version ID: 1078410453",
+		"source": "Wikipedia",
+		"title": "Quasi-experiment",
+		"URL": "https://en.wikipedia.org/w/index.php?title=Quasi-experiment&oldid=1078410453",
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					8,
+					30
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					21
+				]
+			]
+		}
+	},
+	{
+		"id": "shadish2001",
+		"type": "book",
+		"call-number": "BD591 .S48 2001",
+		"event-place": "Boston",
+		"ISBN": "978-0-395-61556-0",
+		"number-of-pages": "623",
+		"publisher": "Houghton Mifflin",
+		"publisher-place": "Boston",
+		"source": "Library of Congress ISBN",
+		"title": "Experimental and quasi-experimental designs for generalized causal inference",
+		"author": [
+			{
+				"family": "Shadish",
+				"given": "William R."
+			},
+			{
+				"family": "Cook",
+				"given": "Thomas D."
+			},
+			{
+				"family": "Campbell",
+				"given": "Donald T."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2001"
+				]
+			]
+		}
+	},
+	{
+		"id": "schmelzer2021",
+		"type": "book",
+		"abstract": "Beginners with little background in statistics and econometrics often have a hard time understanding the benefits of having programming skills for learning and applying Econometrics. ‘Introduction to Econometrics with R’ is an interactive companion to the well-received textbook ‘Introduction to Econometrics’ by James H. Stock and Mark W. Watson (2015). It gives a gentle introduction to the essentials of R programming and guides students in implementing the empirical applications presented throughout the textbook using the newly aquired skills. This is supported by interactive programming exercises generated with DataCamp Light and integration of interactive visualizations of central concepts which are based on the flexible JavaScript library D3.js.",
+		"source": "www.econometrics-with-r.org",
+		"title": "Introduction to Econometrics with R",
+		"URL": "https://www.econometrics-with-r.org/",
+		"author": [
+			{
+				"family": "Schmelzer",
+				"given": "Christoph Hanck",
+				"suffix": "Martin Arnold, Alexander Gerber, and Martin"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					8,
+					31
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					10,
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "guzman2022a",
+		"type": "article-journal",
+		"abstract": "To increase public transport use, especially for individuals with lower incomes, many cities worldwide have introduced subsidies for public transport systems. However, quantitative evidence of their effects on actual ridership remains scarce, especially in Global South countries. Using a quasi-experimental regression disconti­ nuity design (RDD) in combination with administrative data for all personalized travel cards of public transport users during the years 2017–2019 in Bogota´, Colombia, the present paper assesses the causal effect of a transport subsidy focused on low-income individuals on the number of trips that individuals undertake. Our results show that the subsidy, equaling 32% of the regular fare, significantly and substantially increases the total number of monthly public transport trips. However, the results suggest that the size of the subsidy’s effect on ridership has decreased over time, while also evidencing a more pronounced effect among economically active individuals compared to inactive ones. Overall, our results suggest that public transport subsidies for low-income individuals can be an effective way for increasing public transport use among this population segment, which may translate into improved well-being because of improved access to local labor markets and recreational activities.",
+		"container-title": "Transport Policy",
+		"DOI": "10.1016/j.tranpol.2022.07.016",
+		"ISSN": "0967070X",
+		"journalAbbreviation": "Transport Policy",
+		"language": "en",
+		"page": "215-224",
+		"source": "DOI.org (Crossref)",
+		"title": "The effects of public transport subsidies for lower-income users on public transport use: A quasi-experimental study",
+		"title-short": "The effects of public transport subsidies for lower-income users on public transport use",
+		"URL": "https://linkinghub.elsevier.com/retrieve/pii/S0967070X22002037",
+		"volume": "126",
+		"author": [
+			{
+				"family": "Guzman",
+				"given": "Luis A."
+			},
+			{
+				"family": "Hessel",
+				"given": "Philipp"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					9,
+					26
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					9
+				]
+			]
+		}
+	},
+	{
+		"id": "abadie2021",
+		"type": "article-journal",
+		"abstract": "Probably because of their interpretability and transparent nature, synthetic controls have become widely applied in empirical research in economics and the social sciences. This article aims to provide practical guidance to researchers employing synthetic control methods. The article starts with an overview and an introduction to synthetic control estimation. The main sections discuss the advantages of the synthetic control framework as a research design, and describe the settings where synthetic controls provide reliable estimates and those where they may fail. The article closes with a discussion of recent extensions, related methods, and avenues for future research. (JEL B41, C32, C54, E23, F15, O47)",
+		"container-title": "Journal of Economic Literature",
+		"DOI": "10.1257/jel.20191450",
+		"ISSN": "0022-0515",
+		"issue": "2",
+		"journalAbbreviation": "Journal of Economic Literature",
+		"language": "en",
+		"page": "391-425",
+		"source": "DOI.org (Crossref)",
+		"title": "Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects",
+		"title-short": "Using Synthetic Controls",
+		"URL": "https://pubs.aeaweb.org/doi/10.1257/jel.20191450",
+		"volume": "59",
+		"author": [
+			{
+				"family": "Abadie",
+				"given": "Alberto"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					4
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					6,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "dahl2012",
+		"type": "article-journal",
+		"container-title": "The American Economic Review",
+		"issue": "5",
+		"language": "en",
+		"page": "1927-1956",
+		"source": "Zotero",
+		"title": "The Impact of Family Income on Child Achievement: Evidence from the Earned Income Tax Credit",
+		"URL": "http://www.jstor.org/stable/41724610",
+		"volume": "102",
+		"author": [
+			{
+				"family": "Dahl",
+				"given": "Gordon B."
+			},
+			{
+				"family": "Lochner",
+				"given": "Lance"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2012"
+				]
+			]
+		}
+	},
+	{
+		"id": "mccrary2006",
+		"type": "article-journal",
+		"abstract": "Standard suﬃcient conditions for identiﬁcation in the regression discontinuity design are continuity of the conditional expectation of counterfactual outcomes in the running variable. These continuity assumptions may not be plausible if agents are able to manipulate the running variable. This paper develops a test of manipulation related to continuity of the running variable density function. The methodology is applied to popular elections to the House of Representatives, where sorting is neither expected nor found, and to roll-call voting in the House, where sorting is both expected and found.",
+		"language": "en",
+		"page": "27",
+		"source": "Zotero",
+		"title": "Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test",
+		"author": [
+			{
+				"family": "McCrary",
+				"given": "Justin"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2006",
+					12
+				]
+			]
+		}
+	},
+	{
+		"id": "mccrary2008",
+		"type": "article-journal",
+		"abstract": "Standard sufficient conditions for identification in the regression discontinuity design are continuity of the conditional expectation of counterfactual outcomes in the running variable. These continuity assumptions may not be plausible if agents are able to manipulate the running variable. This paper develops a test of manipulation related to continuity of the running variable density function. The methodology is applied to popular elections to the House of Representatives, where sorting is neither expected nor found, and to roll call voting in the House, where sorting is both expected and found.",
+		"collection-title": "The regression discontinuity design: Theory and applications",
+		"container-title": "Journal of Econometrics",
+		"DOI": "10.1016/j.jeconom.2007.05.005",
+		"ISSN": "0304-4076",
+		"issue": "2",
+		"journalAbbreviation": "Journal of Econometrics",
+		"language": "en",
+		"page": "698-714",
+		"source": "ScienceDirect",
+		"title": "Manipulation of the running variable in the regression discontinuity design: A density test",
+		"title-short": "Manipulation of the running variable in the regression discontinuity design",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S0304407607001133",
+		"volume": "142",
+		"author": [
+			{
+				"family": "McCrary",
+				"given": "Justin"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2008",
+					2,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "deutschmann2023",
+		"type": "article-journal",
+		"abstract": "Privatization of a public good (the management of sewage treatment centers in Dakar, Senegal) leads to an increase in the productivity of downstream sewage dumping companies and a decrease in downstream prices of the services they provide to households. We use the universe of legal dumping of sanitation waste from May 2009 to May 2018 to show that legal dumping increased substantially following privatization—on average an increase of 74%, or an increase of about 1640 trips to treatment centers each month. This is due to increased productivity of all trucks, not just those associated with the company managing the privatized treatment centers. Household-level survey data shows that downstream prices of legal sanitary dumping decreased by 5% following privatization, and DHS data shows that diarrhea rates among children under five decreased in Dakar relative to secondary cities in Senegal following privatization with no similar effect on respiratory illness as a placebo.",
+		"container-title": "Journal of Development Economics",
+		"DOI": "10.1016/j.jdeveco.2022.102971",
+		"ISSN": "0304-3878",
+		"journalAbbreviation": "Journal of Development Economics",
+		"language": "en",
+		"page": "102971",
+		"source": "ScienceDirect",
+		"title": "Privatization of public goods: Evidence from the sanitation sector in Senegal",
+		"title-short": "Privatization of public goods",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S0304387822001134",
+		"volume": "160",
+		"author": [
+			{
+				"family": "Deutschmann",
+				"given": "Joshua W."
+			},
+			{
+				"family": "Gars",
+				"given": "Jared"
+			},
+			{
+				"family": "Houde",
+				"given": "Jean-François"
+			},
+			{
+				"family": "Lipscomb",
+				"given": "Molly"
+			},
+			{
+				"family": "Schechter",
+				"given": "Laura"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					12
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2023",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "chen2019",
+		"type": "article-journal",
+		"abstract": "This paper explores the demand side of hukou (household registration) acquisition in China by estimating the market valuation of urban hukou. Based on Jinan City’s acquiring the hukous by purchasing houses policy, this paper uses houses with a floor area slightly larger and slightly smaller than the minimum required as the treatment and control groups, respectively, to implement a regression discontinuity design. The results show that residents’ willingness to pay for urban hukou in Jinan City was approximately 90,000–126,000 yuan in 2017. We also find great heterogeneity in different housing submarkets; the value of hukou is much higher in immigrant-dominated housing markets and top primary school districts. Our findings are robust to parametric and nonparametric estimates and different model specifications. We perform falsification tests by assuming a false policy introduction date and placebo tests based on rental data. Our analysis offers insights for hukou system reform and public services provision.",
+		"container-title": "Journal of Development Economics",
+		"DOI": "10.1016/j.jdeveco.2019.102381",
+		"ISSN": "0304-3878",
+		"journalAbbreviation": "Journal of Development Economics",
+		"language": "en",
+		"page": "102381",
+		"source": "ScienceDirect",
+		"title": "Valuing the urban hukou in China: Evidence from a regression discontinuity design for housing prices",
+		"title-short": "Valuing the urban hukou in China",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S0304387818309520",
+		"volume": "141",
+		"author": [
+			{
+				"family": "Chen",
+				"given": "Yu"
+			},
+			{
+				"family": "Shi",
+				"given": "Shaobin"
+			},
+			{
+				"family": "Tang",
+				"given": "Yugang"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					12
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2019",
+					11,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "meng2017",
+		"type": "article-journal",
+		"abstract": "This paper develops a method for forecasting the marginal abatement cost (MAC) of climate policy using three features of the failed Waxman-Markey bill. First, the MAC is revealed by the price of traded permits. Second, the permit price is estimated using a regression discontinuity design (RDD) comparing stock returns of firms on either side of the policy's free permit cutoff rule. Third, because Waxman-Markey was never implemented, I extend the RDD approach to incorporate prediction market prices which normalize estimates by policy realization probabilities. A final bounding analysis recovers a MAC range of $5 to $19 per ton CO\n              2\n              e. (JEL G12, G14, Q52, Q54, Q58)",
+		"container-title": "American Economic Review",
+		"DOI": "10.1257/aer.20150781",
+		"ISSN": "0002-8282",
+		"issue": "3",
+		"journalAbbreviation": "American Economic Review",
+		"language": "en",
+		"page": "748-784",
+		"source": "DOI.org (Crossref)",
+		"title": "Using a Free Permit Rule to Forecast the Marginal Abatement Cost of Proposed Climate Policy",
+		"URL": "https://pubs.aeaweb.org/doi/10.1257/aer.20150781",
+		"volume": "107",
+		"author": [
+			{
+				"family": "Meng",
+				"given": "Kyle C."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					12
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2017",
+					3,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "fujiwara2015",
+		"type": "article-journal",
+		"abstract": "This paper studies the introduction of electronic voting technology in Brazilian elections. Estimates exploiting a regression discontinuity design indicate that electronic voting reduced residual (error-ridden and uncounted) votes and promoted a large de facto enfranchisement of mainly less educated citizens. Estimates exploiting the unique pattern of the technology’s phase-in across states over time suggest that, as predicted by political economy models, it shifted government spending toward health care, which is particularly beneﬁcial to the poor. Positive effects on both the utilization of health services (prenatal visits) and newborn health (low-weight births) are also found for less educated mothers, but not for the more educated.",
+		"container-title": "Econometrica",
+		"DOI": "10.3982/ECTA11520",
+		"ISSN": "0012-9682",
+		"issue": "2",
+		"journalAbbreviation": "Econometrica",
+		"language": "en",
+		"page": "423-464",
+		"source": "DOI.org (Crossref)",
+		"title": "Voting Technology, Political Responsiveness, and Infant Health: Evidence From Brazil",
+		"title-short": "Voting Technology, Political Responsiveness, and Infant Health",
+		"URL": "https://www.econometricsociety.org/doi/10.3982/ECTA11520",
+		"volume": "83",
+		"author": [
+			{
+				"family": "Fujiwara",
+				"given": "Thomas"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					12
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015"
+				]
+			]
+		}
+	},
+	{
+		"id": "akhtari2022",
+		"type": "article-journal",
+		"abstract": "We study how political turnover in mayoral elections in Brazil affects public service provision by local governments. Exploiting a regression discontinuity design for close elections, we find that municipalities with a new party in office experience upheavals in the municipal bureaucracy: new personnel are appointed across multiple service sectors, and at both managerial and non-managerial levels. In education, the increase in the replacement rate of personnel in schools controlled by the municipal government is accompanied by test scores that are 0.05–0.08 standard deviations lower. In contrast, turnover of the mayor’s party does not impact local (non-municipal) schools. These findings suggest that political turnover can adversely affect the quality of public services when the bureaucracy is not shielded from the political process. (JEL D72, D73, H75, H76, J45, O17)",
+		"container-title": "American Economic Review",
+		"DOI": "10.1257/aer.20171867",
+		"ISSN": "0002-8282",
+		"issue": "2",
+		"journalAbbreviation": "American Economic Review",
+		"language": "en",
+		"page": "442-493",
+		"source": "DOI.org (Crossref)",
+		"title": "Political Turnover, Bureaucratic Turnover, and the Quality of Public Services",
+		"URL": "https://pubs.aeaweb.org/doi/10.1257/aer.20171867",
+		"volume": "112",
+		"author": [
+			{
+				"family": "Akhtari",
+				"given": "Mitra"
+			},
+			{
+				"family": "Moreira",
+				"given": "Diana"
+			},
+			{
+				"family": "Trucco",
+				"given": "Laura"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					12
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					1
+				]
+			]
+		}
+	}
+]

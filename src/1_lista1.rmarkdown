@@ -1,0 +1,757 @@
+---
+title: "Lista 1"
+author: 
+  - name: 
+      given: Arthur
+      family: Bazolli Alvarenga
+    email: arthur.bazolli@estudante.ufjf.br
+    affiliations:
+      - name: PPGE/UFJF
+        city: Juiz de Fora
+        state: MG
+date: today
+
+format: 
+  html:
+    number-sections: false
+    
+knitr: 
+  opts_chunk: 
+    cache: false
+    
+nocite: |
+  @almeida2012
+  @pereira2019a
+  @pereira2022a
+  @bivand2022
+  @acosta2020
+---
+
+
+# Introdução
+
+Este trabalho tem como base as variáveis do projeto Acesso a Oportunidades para a cidade de Belo Horizonte (MG), disponíveis no R pelo pacote `{aopdata}` do Ipea. Com base em dados socioeconômicos, de uso do solo e de redes de transporte, o projeto calculou a acessibilidade cumulativa de diversas cidades brasileiras a oportunidades de trabalho, educação e saúde.
+
+Os dados são agrupados em hexágonos cujo tamanho aproximado equivale a alguns quarteirões. Assim, apesar de não usarmos dados ao nível do indivíduo, há um nível de precisão melhor do que, por exemplo, uma malha de bairros.
+
+Neste trabalho, buscaremos identificar se há uma relação entre renda e acessibilidade ao trabalho, tanto de forma global quanto local.
+
+
+
+## Setup
+
+Carregar os pacotes
+
+```{r}
+#| label: setup
+
+# Pacotes gerais
+library(tidyverse)
+library(here)
+
+# Pacotes geoestatísticos
+library(sp)
+library(sf)
+library(spdep)
+library(tmap)
+library(geobr)
+library(aopdata)
+```
+
+
+Definir os objetos
+
+```{r}
+#| label: download-objects
+#| eval: false
+
+# Download objects to PC
+read_municipality(code_muni = 3106200) %>% 
+  saveRDS(here("data/rds/shp_bhz.RDS"))
+
+read_urban_area() %>% 
+  filter(code_muni == 3106200) %>% 
+  saveRDS(here("data/rds/shp_bhz_urban.RDS"))
+
+read_access(city = "belo horizonte", mode = "public_transport", peak = T, year = 2019, geometry = T) %>% 
+  saveRDS(here("data/rds/shp_aop_bhz.RDS"))
+```
+
+```{r}
+#| label: load-objects
+
+set.seed(1)
+
+# Load objects from PC
+shp_bhz_urban <- readRDS(here("data/rds/shp_bhz_urban.RDS"))
+shp_bhz <- readRDS(here("data/rds/shp_bhz.RDS"))
+shp_aop <- readRDS(here("data/rds/shp_aop_bhz.RDS")) %>% 
+  st_transform(crs = st_crs(shp_bhz))
+
+# Selecting variables from AOP dataset
+shp_aop <- shp_aop %>% 
+  select(year, id_hex, 
+         P001:P007, R001, R003, T001:T004, E001, S001,
+         CMATT60, CMAST60, CMAET60) %>% 
+  na.omit()
+
+# Transforming data
+shp_aop <- shp_aop %>% 
+  mutate(
+    CMATT60 = 100*CMATT60/sum(T001), CMAST60 = 100*CMAST60/sum(S001), CMAET60 = 100*CMAET60/sum(E001),
+    R001_log = log(R001)
+  )
+```
+
+
+
+
+## Visualização
+
+Mapa de acessibilidade cumulativa
+
+```{r}
+#| label: map_cmatt60
+
+map_base <- ggplot() +
+  geom_sf(
+    data = shp_bhz_urban,
+    fill = "grey",
+    color = NA
+  ) +
+  geom_sf(
+    data = shp_bhz,
+    fill = NA
+  )
+
+map_base +
+  geom_sf(
+    data = shp_aop,
+    aes(fill = CMATT60/100),
+    color = NA
+  ) +
+  scale_fill_viridis_c(option = "inferno", labels = scales::percent) +
+  labs(
+    title = "Acessibilidade cumulativa em Belo Horizonte",
+    subtitle = "Deslocando por transporte público em até 60 minutos",
+    fill = "Empregos acessados (%)",
+    caption = "Fonte: elabora com base em Pereira et al (2022)"
+  ) +
+  coord_sf(
+    xlim = c(-44.08, -43.85),
+    ylim = c(-20.05, -19.78)
+  ) +
+  theme_void()
+```
+
+
+Mapa dos decis de renda
+
+```{r}
+#| label: map_r003
+
+map_base +
+  geom_sf(
+    data = shp_aop,
+    aes(fill = factor(R003)),
+    color = NA
+  ) +
+  scale_fill_viridis_d(option = "viridis") +
+  labs(
+    title = "Como é a distribuição de renda em Belo Horizonte?",
+    subtitle = "Decil da renda média de cada local",
+    fill = "Decis de renda",
+    caption = "Fonte: elabora com base em Pereira et al (2022)"
+  ) +
+  coord_sf(
+    xlim = c(-44.08, -43.85),
+    ylim = c(-20.05, -19.78)
+  ) +
+  theme_void()
+```
+
+
+
+
+
+# Operações espaciais preliminares
+
+Para calcular as estatísticas como o I de Moran, precisamos definir uma matriz de pesos espaciais. Como estamos usando uma malha de hexágonos, adotaremos uma matriz de contiguidade *Queen*.
+
+No R, uma forma usual de calcular as matrizes de distância é pelas funções do pacote `{spdep}`. O primeiro passo é definir a lista de vizinhos de acordo com a convenção de contiguidade adotada: usamos a função `poly2nb`, pois os dados são poligonais.
+
+Em seguida, calculamos a matriz usando a função `nb2listw()`, que criará os pesos espaciais. Usamos a opção `style = "W"` para definir que a matriz será padronizada nas linhas.
+
+```{r}
+#| label: W_queen_2
+
+# Criar lista de vizinhos
+nb_aop <- poly2nb(shp_aop, queen = T)
+
+W_queen <- nb2listw(nb_aop, style = "W")
+```
+
+
+
+
+
+# Questão 1
+
+Suspeitando que a distribuição de **renda** (variável $R001$) em logaritmo não é aleatória no espaço, um ponto de partida é checar se há dependência espacial global. Fazemo-lo por meio do I de moran: para matriz W normalizada na linha,
+
+$$
+\begin{aligned}
+I &= \frac{z'Wz}{z'z} \text{ e} \\
+\mathbb{E}(I) &= (n - 1)^{-1}.
+\end{aligned}
+$$
+
+Assim, se $I_{calc} = \mathbb{E}(I)$, há aleatoriedade espacial. Do contrário, um valor abaixo do esperado indica dependência espacial negativa, e um valor superior indica dependência positiva.
+
+
+## I de moran global univariado
+
+No pacote `{spdep}`, a função `moran.test()` calcula o I de Moran e testa a hipótese de dependência espacial, sendo possível considerar tanto as hipóteses de normalidade (definindo `randomisation = FALSE`), quanto de distribuição espacial aleatória (padrão). 
+
+Também é possível alterar a hipótese alternativa do teste. Por padrão, `alternative = "greater"`:
+$$
+\begin{cases}
+H_0: I \le -(n-1)^{-1} \\
+H_1: I > -(n-1)^{-1}
+\end{cases}
+$$
+
+Ou seja, se rejeitarmos a hipótese nula, estamos rejeitando ao mesmo tempo as possibilidades de dependência negativa e de independência. os outros valores possíveis para o argumento são `"less"` (o oposto) ou `"two.sided"` ($H_0 = aleatoriedade$, apenas).
+
+Outra variação do teste é a função `moran.mc()`, que segue a mesma lógica mas permite especificar o número de permutações a serem realizadas na aleatorização. 
+
+Abaixo, podemos verificar as funções `moran.mc()` para 9.999 permutações, `moran.test()` padrão e `moran.test()` com `alternative = "two.sided"`.
+
+```{r}
+#| label: moran.test
+#| cache: true
+
+## Com 9.999 simulações
+moran.mc(shp_aop$R001_log, listw = W_queen, nsim = 9999)
+
+moran <- moran.test(shp_aop$R001_log, listw = W_queen)
+moran
+
+moran.test(shp_aop$R001_log, listw = W_queen, alternative = "two.sided")
+```
+
+
+Os testes randomizados calcularam um I de Moran aproximado em 0,8539 Com um p-valor muito próximo de 0, isso nos permite rejeitar fortemente a hipótese de a variável `R001` ser aleatoriamente distribuída no espaço. Como $I > \mathbb{E}(I)$, há dependência espacial **positiva**: hexágonos de alta renda são circundados por hexágonos de alta renda; hexágonos de baixa renda têm vizinhos de baixa renda. Esse padrão de agrupamento é bastante visível no mapa da renda disponibilizado na seção anterior.
+
+
+## Diagrama de dispersão
+
+
+```{r}
+#| label: moran.plot
+
+ggplot() +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point(
+    data = shp_aop,
+    aes(x = scale(R001_log), y = lag.listw(W_queen, scale(R001_log)))
+  ) +
+  geom_abline(slope = moran$estimate[1], intercept = 0, color = "red") +
+  labs(
+    title = "Visualizando a dependência espacial da renda",
+    subtitle = "Em Belo Horizonte (MG)",
+    caption = "Fonte: elaborado a partir de Pereira et al. (2022)"
+  ) +
+  xlab("Log da renda média (R$), padronizado (z)") +
+  ylab("Log da renda média dos vizinhos, \npadronizado (Wz)") +
+  theme_minimal()
+```
+
+
+
+
+
+# Questão 2
+
+## I de moran global bivariado
+
+No aspecto bivariado, podemos verificar se há dependência espacial entre o $log$ natural da renda e acessibilidade:
+
+```{r}
+#| label: moran_bv
+#| cache: true
+
+moran_bv <- moran_bv(shp_aop$R001_log, shp_aop$CMATT60, listw = W_queen, nsim = 9999)
+moran_bv
+
+ggplot() +
+  geom_histogram(
+    aes(x = moran_bv$t), 
+    bins = 333
+  ) + 
+  geom_vline(
+    xintercept = moran_bv$t0,
+    color = "red"
+  ) +
+  theme_classic()
+```
+
+
+Ao realizar cerca de 10 mil permutações aleatórias das variáveis no espaço, obtemos uma distribuição similar à normal para o I de Moran bivariado com média 0. No entanto, o verdadeiro valor do índice é de 0,5224: como ele se encontra fora do alcance da distribuição das permutações aleatórias ---é indicado pela linha vermelha no gráfico acima--- podemos rejeitar a hipótese de que a distribuição espacial real é aproximadamente aleatória. 
+
+Além da verificação gráfica, podemos conferir pelo teste t, cujo p-valor próximo de 0 rejeita $H_0: \mathbb{E}(I) >= I_{calc}$:
+
+```{r}
+#| label: moran_bv.test
+
+t.test(moran_bv$t, mu = moran_bv$t0, alternative = "less")
+```
+
+
+Interpretando o resultado: a relação positiva e significativa indica que regiões de alta renda são cercadas de regiões de alta acessibilidade, o contrário também sendo verdadeiro. No entanto, cabe a ressalva feita pelo próprio autor do pacote estatístico: "a medida resultante pode superestimar o tamanho da autocorrelação espavial, que pode ser um produto da correlação inerente entre X e Y".
+
+
+
+## Diagrama de dispersão
+
+
+```{r}
+#| label: moran_bv.plot
+
+ggplot() +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point(
+    data = shp_aop,
+    aes(x = lag.listw(W_queen, scale(R001_log)), y = scale(CMATT60))
+  ) +
+  geom_abline(slope = moran_bv$t0, intercept = 0, color = "red") +
+  labs(
+    title = "Dependência espacial bivariada: Acessibilidade e renda",
+    subtitle = "Em Belo Horizonte (MG)",
+    caption = "Fonte: elaborado a partir de Pereira et al. (2022)"
+  ) +
+  xlab("Log da renda média dos vizinhos, padronizado (Wz)") +
+  ylab("Acessibilidade média, padronizada (z)") +
+  theme_minimal()
+```
+
+
+
+
+
+# Questão 3
+
+## Moran local
+
+
+```{r}
+#| label: lisa
+
+lisa_R001 <- localmoran(shp_aop$R001_log, W_queen)
+
+shp_aop <- shp_aop %>% 
+  cbind(
+    lisa = attr(lisa_R001, "quadr")[,1],
+    lisa_p = lisa_R001[,5]
+  )
+```
+
+
+
+### Mapa de *clusters* LISA
+
+
+```{r}
+#| label: lisa_map
+
+pal_4 <- c("#002968", "#ABD8F6", "#FFB1B7", "#9E0200")
+pal_3 <- c("#FFB1B7", "orange", "#ABD8F6") #002968
+pal_2 <- c("#FFB1B7", "#ABD8F6")
+
+map_base +
+  geom_sf(
+    data = shp_aop %>% subset(lisa_p <= 0.05),
+    aes(
+      fill = factor(lisa)
+    ),
+    color = NA
+  ) +
+  scale_fill_manual(
+    values = pal_3,
+    labels = c("Baixo-baixo", "Baixo-alto", "Alto-alto")
+  ) +
+  labs(
+    title = "Clusters de renda em Belo Horizonte (MG)",
+    subtitle = "Classificadas pelo I de Moran local",
+    fill = "Clusters LISA \nsignificantes a 5%",
+    caption = "Fonte: elaborado com base em Pereira et al. (2022)"
+  ) +
+  coord_sf(
+    xlim = c(-44.08, -43.85),
+    ylim = c(-20.05, -19.78)
+  ) +
+  theme_void()
+```
+
+
+O mapa de clusters LISA aponta um padrão muito claro: há dois grandes *clusters* de alta renda --um na regional Pampulha e outro ao redor do centro--- e agrupamentos menores de alta renda, mas em maior quantidade e espalhados pela periferia da cidade (sobretudo na borda norte). Esse resultado não é inesperado; pelo contrário, reflete uma discussão frequente na economia urbana sobre localização, valor da terra e acesso a moradia.
+
+Cabe destacar, ainda, três localidades que fogem ao padrão: são regiões de baixa renda mas com vizinhos de alta renda, evidência da desigualdade urbana. O ponto mais ao sul é o Morro do Papagaio, um enclave no meio da região mais nobre da cidade. O ponto a oeste incorpora um trecho de vazio urbano ---uma alça de acesso à Via Expressa---, parte de uma ocupação informal no bairro Calafate e poucos imóveis regulares nas duas margens da rodovia. Ao seu redor, porém, estão quarteirões valoreizados dos bairros Calafate, Nova Suíssa e Padre Eustáquio. Por fim, o terceiro hexágono de padrão baixo-alto corresponde a um conjunto de quarteirões bastante degradado do Centro, nas imediações da Rua Guaicurus. Ao seu norte do outro lado da ferrovia, encontram-se quarteirões redisenciais valorizados do bairro Floresta; ao sul, quarteirões mais nobres do Centro.
+
+Mapa dinâmico (dê *zoom* para conferir as regiões):
+
+```{r}
+#| label: lisa_tmap
+tmap_mode("view")
+
+tm_shape(shp_bhz) +
+  tm_borders() +
+  tm_shape(shp_aop %>% subset(lisa_p <= 0.05)) +
+  tm_fill(col = "lisa", alpha = 0.60, palette = rev(pal_4))
+```
+
+
+
+
+## Getis-ord local
+
+
+```{r}
+#| label: getis_local
+
+localG_R001 <- localG_perm(shp_aop$R001_log, W_queen)
+
+shp_aop <- shp_aop %>% 
+  cbind(
+    getis = attr(localG_R001, "cluster"),
+    getis_p = attr(localG_R001, "internals")[,4]
+  )
+```
+
+
+
+### Mapa de *clusters* G
+
+
+```{r}
+#| label: getis_map
+
+map_base +
+  geom_sf(
+    data = shp_aop %>% subset(getis_p <= 0.05),
+    aes(
+      fill = factor(getis)
+    ),
+    color = NA
+  ) +
+  scale_fill_manual(
+    values = pal_2,
+    labels = c("Baixo", "Alto")
+  ) +
+  labs(
+    title = "Clusters de renda em Belo Horizonte (MG)",
+    subtitle = "Classificadas pelo G de Getis-Ord",
+    fill = "Clusters G \nsignificantes a 5%",
+    caption = "Fonte: elaborado com base em Pereira et al. (2022)"
+  ) +
+  coord_sf(
+    xlim = c(-44.08, -43.85),
+    ylim = c(-20.05, -19.78)
+  ) +
+  theme_void()
+```
+
+
+A estatística do G local resultou em um padrão quase idêntico ao do LISA. A principal diferença é que como o G considera apenas a autocorrelação espacial **positiva**, as localidades Baixo-Alto da primeira análise (Morro do Papagaio, assentamento no Calafate e região da Rua Guaicurus) foram classificados como *cold spots*, isto é, regiões de baixo valor.
+
+
+
+
+# Questão 4
+
+## Moran local multivariado
+
+
+```{r}
+#| label: bilisa
+#| cache: true
+
+bilisa_R001 <- localmoran_bv(shp_aop$R001_log, shp_aop$CMATT60, listw = W_queen, nsim = 9999)
+
+shp_aop <- shp_aop %>% 
+  cbind(
+    bilisa = interaction(scale(shp_aop$R001) > 0, scale(shp_aop$CMATT60) > 0) %>% 
+  str_replace_all("TRUE", "High") %>% 
+  str_replace_all("FALSE", "Low"),
+    bilisa_p = bilisa_R001[,5]
+  )
+```
+
+
+
+
+## Mapa de *clusters* bivariado
+
+
+```{r}
+#| label: bilisa_map
+
+map_base +
+  geom_sf(
+    data = shp_aop %>% subset(bilisa_p <= 0.05),
+    aes(
+      fill = factor(bilisa)
+    ),
+    color = NA,
+    alpha = 0.75
+  ) +
+  scale_fill_manual(
+    values = pal_4,
+    labels = c("Alta renda, alta acessibilidade", "Alta renda, baixa acessibilidade", "Baixa renda, alta acessibilidade", "Baixa renda, baixa acessibilidade")
+  ) +
+  labs(
+    title = "Clusters de renda e acessibilidade em Belo Horizonte (MG)",
+    subtitle = "Classificadas pelo I de Moran local",
+    fill = "Clusters biLISA \nsignificantes a 5%",
+    caption = "Fonte: elaborado com base em Pereira et al. (2022)"
+  ) +
+  coord_sf(
+    xlim = c(-44.08, -43.85),
+    ylim = c(-20.05, -19.78)
+  ) +
+  theme_void()
+```
+
+
+A análise de autocorrelação local bivariada converge para a análise apontada nos testes anteriores: as regiões centrais da cidade concentram a população de maior renda e com maior acesso ao emprego, enquanto a periferia abriga a população de baixa renda e com baixa acessibilidade. Interessante notar também que a mancha de alta acessibilidade não é exatamente concêntrica, mas sim, segue os principais corredores de transporte, como a av. Amazonas, os corredores do Move (BRT) e o metrô.
+
+No entanto, revela também um novo padrão: há regiões relativamente centrais com boa acessibilidade, mas população de baixa renda; assim como regiões afastadas (a noroeste) com alta renda e baixa acessibilidade. Um exemplo é o Morro do Papagaio, enclave vermelho-claro no cluster azul-escuro da regional Centro-Sul.
+
+Mapa dinâmico:
+
+```{r}
+#| label: bilisa_tmap
+
+tm_shape(shp_bhz) +
+  tm_borders() +
+  tm_shape(shp_aop %>% subset(bilisa_p <= 0.05)) +
+  tm_fill(col = "bilisa", alpha = 0.60, palette = pal_4)
+```
+
+
+
+
+
+# Questão 5
+
+## *Outliers* globais
+
+Podemos identificar as regiões cuja renda média se sobressai analisando um *boxplot* da renda, o qual aponta as observações fora do intervalo interquartil (`IQR`). Matematicamente, definimos
+
+$$
+\begin{aligned}
+cerca &= mediana \pm h*IQR,
+\end{aligned}
+$$
+em que $h$ ou *hinge* é um parâmetro (no caso, 3). Assim, a variável é um *outlier* se ela se encontra fora da $cerca$.
+
+No caso de belo horizonte, como a renda mediana é de R\$ `r median(shp_aop$R001)` e o IQR é `r IQR(shp_aop$R001)`, a cerca detecta apenas outliers positivos.
+
+Visualizando no espaço:
+
+```{r}
+#| label: outlier_map
+
+shp_aop <- shp_aop %>% 
+  cbind(
+    ifelse(
+    shp_aop$R001 >= median(shp_aop$R001) + 3*IQR(shp_aop$R001) | shp_aop$R001 <= median(shp_aop$R001) - 3*IQR(shp_aop$R001), 
+    "Outlier", 
+    cut(shp_aop$R001, breaks = quantile(shp_aop$R001)) 
+    ) %>% 
+    factor(
+      levels = c("1", "2", "3", "4", "Outlier"),
+      labels = c("1º quartil", "2º quartil", "3º quartil", "4º quartil", "Outlier superior")
+    ) %>% 
+      as_tibble() %>% 
+      rename(R001_q = value)
+  )
+
+map_base +
+  geom_sf(
+    data = shp_aop %>% filter(!is.na(R001_q)),
+    aes(fill = R001_q),
+    color = NA
+  ) +
+  scale_fill_viridis_d() +
+  labs(
+    title = "Renda em Belo Horizonte (MG):",
+    subtitle = "Onde estão os outliers?",
+    fill = "Renda média"
+  ) +
+  coord_sf(
+    xlim = c(-44.08, -43.85),
+    ylim = c(-20.05, -19.78)
+  ) +
+  theme_void()
+```
+
+
+Como previsível, os principais outliers se concentram nas regiões nobres da cidade: bairros das regionais Centro-Sul e Pampulha (na orla sul da lagoa).
+
+
+
+## *Outliers* espaciais univariados
+
+
+```{r}
+#| label: spatial.outlier
+
+outliers <- shp_aop %>% 
+  transmute(z = scale(R001_log), Wz = lag.listw(W_queen, scale(R001_log)))
+
+ggplot() +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point(
+    data = outliers,
+    aes(x = z, y = Wz)
+  ) +
+  geom_abline(slope = moran$estimate[1], intercept = 0, color = "red") +
+  geom_point(
+    data = outliers %>% subset(Wz > z*moran$estimate[1] + 1 | Wz < z*moran$estimate[1] - 1),
+    aes(x = z, y = Wz, color = "Outliers"),
+  ) +
+  geom_point(
+    data = outliers %>% subset(z > 3 | z < -3.5),
+    aes(x = z, y = Wz, color = "Pontos de \nalavancagem")
+  ) +
+  scale_color_manual(name = "", values = c("Pontos de \nalavancagem" = "orange", "Outliers" = "green")) +
+  labs( 
+    title = "Outliers espaciais da renda",
+    subtitle = "Em Belo Horizonte (MG)",
+    caption = "Fonte: elaborado a partir de Pereira et al. (2022)"
+  ) +
+  xlab("Log da renda média, padronizado (z)") +
+  ylab("Log da renda média dos vizinhos, \npadronizado (Wz)") +
+  theme_minimal()
+```
+
+
+A dispersão da renda média contra a renda espacialmente defasada permite identificar pontos de alavancagem e outilers. Filtrando a base de dados para remover essas observações e recalculando o I de Moran:
+
+```{r}
+#| label: spatial.outlier_adjusted
+
+outliers_f <- outliers %>%
+  subset(Wz < z*moran$estimate[1] + 1 & Wz > z*moran$estimate[1] - 1 & z < 3 | z < - 3.5) 
+
+nb_outliers <- poly2nb(outliers_f, queen = T)
+W_queen_outliers <- nb2listw(nb_outliers, style = "W")
+
+moran_outliers <- moran.test(outliers_f$z, listw = W_queen_outliers)
+
+ggplot() +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point(
+    data = outliers_f,
+    aes(x = z, y = Wz)
+  ) +
+  geom_abline(aes(slope = moran$estimate[1], intercept = 0, color = "Original")) +
+  geom_abline(aes(slope = moran_outliers$estimate[1], intercept = 0, color = "Ajustado")) +
+  scale_color_manual(name = "I de Moran", values = c("Original" = "red", "Ajustado" = "green")) +
+  labs(
+    title = "Outliers espaciais da renda",
+    subtitle = "Em Belo Horizonte (MG)",
+    caption = "Fonte: elaborado a partir de Pereira et al. (2022)"
+  ) +
+  xlab("Log da renda média, padronizado (z)") +
+  ylab("Log da renda média dos vizinhos, \npadronizado (Wz)") +
+  theme_minimal()
+```
+
+
+Após removermos os outliers, o I de Moran ajustado mostrou pouca diferença em relação ao original.
+
+
+
+## *Outliers* espaciais bivariados
+
+```{r}
+#| label: spatial.outlier_bv
+outliers_bv <- shp_aop %>% 
+  transmute(z2 = scale(CMATT60), z1 = scale(R001_log), Wz1 = lag.listw(W_queen, scale(R001_log)))
+
+ggplot() +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point(
+    data = outliers_bv,
+    aes(x = Wz1, y = z1)
+  ) +
+  geom_abline(slope = moran_bv$t0, intercept = 0, color = "red") +
+  geom_point(
+    data = outliers_bv %>% subset(z2 > Wz1*moran_bv$t0 + 1.5 | z2 < Wz1*moran_bv$t0 - 1.5),
+    aes(x = Wz1, y = z2, color = "Outliers"),
+  ) +
+  geom_point(
+    data = outliers_bv %>% subset(Wz1 > 2.5 | Wz1 < -2.5),
+    aes(x = Wz1, y = z2, color = "Pontos de \nalavancagem")
+  ) +
+  scale_color_manual(name = "", values = c("Pontos de \nalavancagem" = "orange", "Outliers" = "green")) +
+  labs(
+    title = "Outliers espaciais bivariados: Acessibilidade e renda",
+    subtitle = "Em Belo Horizonte (MG)",
+    caption = "Fonte: elaborado a partir de Pereira et al. (2022)"
+  ) +
+  xlab("Log da renda média dos vizinhos, padronizado (Wz)") +
+  ylab("Acessibilidade média, padronizada (z)") +
+  theme_minimal()
+```
+
+
+Filtrando a base de dados para remover os outliers e pontos de alavancagem e recalculando o I de Moran:
+
+```{r}
+#| label: spatial.outlier_bv_adjusted
+#| cache: true
+
+outliers_bv_f <- outliers_bv %>%
+  subset(z2 < Wz1*moran$estimate[1] + 1.5 & z2 > Wz1*moran$estimate[1] - 1.5 & Wz1 < 2.5 | Wz1 < - 2.5) 
+
+nb_outliers_bv <- poly2nb(outliers_bv_f, queen = T)
+W_queen_outliers_bv <- nb2listw(nb_outliers_bv, style = "W")
+
+moran_bv_f <- moran_bv(outliers_bv_f$z1, outliers_bv_f$z2, listw = W_queen_outliers_bv, nsim = 9999)
+
+ggplot() +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point(
+    data = outliers_bv_f,
+    aes(x = Wz1, y = z2)
+  ) +
+  geom_abline(aes(slope = moran_bv$t0, intercept = 0, color = "Original")) +
+  geom_abline(aes(slope = moran_bv_f$t0, intercept = 0, color = "Ajustado")) +
+  scale_color_manual(name = "I de Moran", values = c("Original" = "red", "Ajustado" = "green")) +
+  labs(
+    title = "Outliers espaciais bivariados: Acessibilidade e renda",
+    subtitle = "Em Belo Horizonte (MG)",
+    caption = "Fonte: elaborado a partir de Pereira et al. (2022)"
+  ) +
+  xlab("Log da renda média dos vizinhos, padronizado (Wz)") +
+  ylab("Acessibilidade média, padronizada (z)") +
+  theme_minimal()
+```
+
+
+No contexto bivariado, a remoção dos outliers e pontos de alavancagem resultou em maior diferença no cálculo do I de moran: o coeficiente original era `r moran_bv$t0`, enquanto o ajustado foi de `r moran_bv_f$t0`.
+
+
+
+
+# Referências
+

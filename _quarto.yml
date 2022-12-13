@@ -1,0 +1,46 @@
+project:
+  title: "Econometria Espacial - UFJF"
+  output-dir: output
+
+geometry: 
+- left=2cm
+- right=2cm
+- top=2cm
+- bottom=2cm
+indent: true
+papersize: a4
+documentcalss: article
+pagestyle: headings
+fontfamily: mathptmx
+fontsize: 12pt
+linestretch: 1
+
+bibliography: src/yaml/spatial.json
+
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf: 
+    toc: false
+    csl: src/yaml/ipea.csl
+    highlight: pygments
+    pandoc_args: 
+      - '--lua-filter=C:/Users/arthu/OneDrive/Documentos/R/Projects/adac/src/yaml/scholarly-metadata.lua'
+      - '--lua-filter=C:/Users/arthu/OneDrive/Documentos/R/Projects/adac/src/yaml/author-info-blocks.lua'
+    includes:
+      in_header: yaml/wrap-code.tex
+
+knitr: 
+  opts_chunk: 
+    warning: false
+    message: false
+    dev: svg
+    fig-format: retina
+    fig-dpi: 300
+    cache: true
+
+editor: source
+

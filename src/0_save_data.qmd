@@ -1,0 +1,103 @@
+---
+title: "Download de dados - SAF"
+author: Universidade Federal de Juiz de Fora (UFJF)
+date: today
+
+knitr: 
+  opts_chunk: 
+    #echo: false
+    message: false
+    warning: false
+    cache: true
+    
+format: html
+
+params:
+  uf: "RO"
+  uf_name: "Rondônia"
+---
+
+# Setup 
+
+```{r}
+#| label: setup
+#| results: hide
+
+library(here)
+library(tidyverse)
+
+library(sf)
+library(geobr)
+library(stplanr)
+library(flightsbr)
+```
+
+
+## Dados da Anac
+```{r}
+#| label: gen-data-br
+#| eval: false
+#| results: hide
+
+# movements
+df_movement <- flightsbr::read_airport_movements(date = 2019) %>% 
+  janitor::clean_names()
+
+df_movement <- df_movement %>% 
+  rename(dep_icao = nr_aeroporto_referencia, arr_icao = nr_voo_outro_aeroporto, movement_type = nr_movimento_tipo, acft_callsign = nr_aeronave_marcas, acft_type = nr_aeronave_tipo, 
+         operator_iata = nr_aeronave_operador, flt_no = nr_voo_numero, service_type = nr_service_type, nature = nr_natureza, 
+         est_date = dt_previsto, est_time = hh_previsto, calco_date = dt_calco, calco_time = hh_calco, td_date = dt_toque, td_time = hh_toque, 
+         rwy_no = nr_cabeceira, box_no = nr_box, prking_no = nr_ponte_conector_remoto, terminal_no = nr_terminal, 
+         pax_local = qt_pax_local, pax_cnx_dom = qt_pax_conexao_domestico, pax_cnx_intl = qt_pax_conexao_internacional, mail = qt_correio, cargo = qt_carga)
+  
+saveRDS(df_movement, here("data/rds/df_movement.RDS"))
+
+
+# aerodromes
+df_aerodromes <- flightsbr::read_airports() %>% 
+  janitor::clean_names()
+
+df_aerodromes <- df_aerodromos %>% 
+  janitor::clean_names() %>% 
+  rename(aero_icao = codigo_oaci, aero_name = nome)
+  
+saveRDS(df_aerodromes, here("data/rds/df_aerodromes.RDS"))
+
+shp_aerodromes <- df_aerodromes %>%
+  filter(longitude != "NaN" & latitude != "NaN") %>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = st_crs(4326)) %>% 
+  st_transform(crs = st_crs(4674))
+
+saveRDS(shp_aerodromes, here("data/rds/shp_aerodromes.RDS"))
+
+
+# flights
+df_flights <- flightsbr::read_flights() %>%
+ janitor::clean_names()
+
+df_flights <- read_csv2(here("data/Dados_Estatisticos.csv"), skip = 1) %>% 
+  janitor::clean_names()
+
+df_flights <- df_flights %>% 
+  rename(operator_iata = empresa_sigla, operator_name = empresa_nome, operator_country = empresa_nacionalidade,
+         year = ano, month = mes,
+         dep_icao = aeroporto_de_origem_sigla, arr_icao = aeroporto_de_destino_sigla, 
+         nature = natureza, flt_group = grupo_de_voo, 
+         pax_paid = passageiros_pagos, pax_free = passageiros_gratis, cargo_paid_kg = carga_paga_kg, cargo_free_kg = carga_gratis_kg, mail_kg = correio_kg,
+         fuel_l = combustivel_litros, flt_dist = distancia_voada_km, 
+         takeoffs = decolagens,
+         cargo_paid_km = carga_paga_km, cargo_free_km = carga_gratis_km, mail_km = correio_km, 
+         seats = assentos, flt_hours = horas_voadas, bag_kg = bagagem_kg) %>% 
+  select(-c(aeroporto_de_origem_nome:aeroporto_de_origem_continente, aeroporto_de_destino_nome:aeroporto_de_destino_continente))
+
+saveRDS(df_flights, here("data/rds/df_flights.RDS"))
+```
+
+
+
+
+
+
+
+
+

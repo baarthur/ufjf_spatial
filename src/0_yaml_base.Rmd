@@ -1,0 +1,43 @@
+---
+title: "Aula 1 - Notas"
+subtitle: "Análise de dados amostrais complexos (ADAC)"
+author: "Arthur Bazolli Alvarenga"
+date: "`r Sys.Date()`"
+lang: pt-BR
+geometry: 
+- left=2cm
+- right=2cm
+- top=2cm
+- bottom=2cm
+indent: true
+papersize: a4
+documentcalss: article
+pagestyle: headings
+fontfamily: mathptmx
+fontsize: 12pt
+linestretch: 1
+bibliography: yaml/Econometrics.json
+csl: yaml/ipea.csl
+nocite: |
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    number_sections: false
+  pdf_document:
+    toc: false
+    #toc_depth: 1
+    number_sections: false
+    highlight: pygments
+    pandoc_args: 
+      - '--lua-filter=C:/Users/arthu/OneDrive/Documentos/R/Projects/adac/src/yaml/scholarly-metadata.lua'
+      - '--lua-filter=C:/Users/arthu/OneDrive/Documentos/R/Projects/adac/src/yaml/author-info-blocks.lua'
+    includes:
+      in_header: yaml/wrap-code.tex
+---
+
+
+
+
+
