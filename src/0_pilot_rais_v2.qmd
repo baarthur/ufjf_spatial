@@ -1,0 +1,287 @@
+---
+title: "Brincando com a RAIS"
+author: "Arthur Bazolli"
+format: html
+---
+
+# Setup
+
+```{r}
+#| label: setup
+
+library(did)
+library(here)
+library(tidyverse)
+library(basedosdados)
+
+set_billing_id("multivariada-sp")
+```
+
+
+
+
+# Baixar e tratar dados
+
+## Basedosdados
+```{r}
+#| label: download_rais_0216
+query_rais_0216 <- "SELECT ano, vinculo_ativo_3112, quantidade_horas_contratadas, valor_remuneracao_media, valor_remuneracao_media_sm, idade, sexo, raca_cor, grau_instrucao_1985_2005, grau_instrucao_apos_2005, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND (ano=2002 OR ano=2003 OR ano=2004 OR ano=2005 OR ano=2006 OR ano=2007 OR ano=2008 OR ano=2009 OR ano=2010 OR ano=2011 OR ano=2012 OR ano=2013 OR ano=2014 OR ano=2015 OR ano=2016) AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0071' OR distritos_sp='0090')"
+
+basedosdados::download(query_rais_0216, path = here("data/df_rais_sp_0216.csv"))
+
+query_rais_1719 <- "SELECT ano, vinculo_ativo_3112, quantidade_horas_contratadas, valor_remuneracao_media, valor_remuneracao_media_sm, idade, sexo, raca_cor, grau_instrucao_1985_2005, grau_instrucao_apos_2005, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND (ano=2017 OR ano=2018 OR ano=2019) AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0071' OR distritos_sp='0090')"
+
+basedosdados::download(query_rais_1719, path = here("data/df_rais_sp_1719.csv"))
+```
+
+
+## Juntar as RAIS
+```{r}
+#| label: read_rais
+
+# df_rais <- here("data") %>% 
+#   list.files(pattern = "df_rais_sp_(\\d+)", full.names = T) %>% 
+#   map(read_csv)
+
+df_rais_0216 <- read_csv(here("data/df_rais_sp_0216.csv"))
+df_rais_1719 <- read_csv(here("data/df_rais_sp_1719.csv"))
+
+
+df_rais <- df_rais_0216 %>% 
+  mutate(
+    grau_instrucao = replace_na(grau_instrucao_1985_2005, 0) + replace_na(grau_instrucao_apos_2005, 0)
+  ) %>% 
+  select(-c(grau_instrucao_1985_2005, grau_instrucao_apos_2005))
+
+df_rais <- df_rais_1719 %>% 
+  mutate(
+    grau_instrucao = replace_na(grau_instrucao_1985_2005, 0) + replace_na(grau_instrucao_apos_2005, 0)
+  ) %>% 
+  select(-c(grau_instrucao_1985_2005, grau_instrucao_apos_2005)) %>% 
+  rbind(df_rais)
+
+
+df_rais <- df_rais %>% 
+  mutate(
+    sal_hora = valor_remuneracao_media/quantidade_horas_contratadas,
+    sm_hora = valor_remuneracao_media_sm/quantidade_horas_contratadas
+  )
+```
+
+
+## Base de distritos
+
+Para ter a informação da data de tratamento
+```{r}
+#| label: read_distritos
+
+distritos <- readxl::read_excel(here("data/distritos_sp_L4L5.xlsx")) %>% 
+  filter(tratado != 0) %>% 
+  select(cod_ibge, distrito, grupo, tratado) %>% 
+  mutate(distritos_sp = paste0("00", cod_ibge))
+```
+
+
+## Juntando
+```{r}
+#| label: rais_distritos
+
+df_rais <- distritos %>% 
+  select(distritos_sp, grupo, tratado) %>% 
+  left_join(df_rais)
+
+# df_rais <- df_rais %>% 
+#   mutate(
+#     tratado = ifelse(data >= ano, 0, 1)
+#   )
+
+saveRDS(df_rais, here("data/rds/rais_sp_0219_L4L5.RDS"))
+
+remove(df_rais, df_rais_0216, df_rais_1719, distritos)
+```
+
+
+## Gráficos de pré-teste
+```{r}
+#| label: plots_ptrends
+
+df_rais_summary <- df_rais %>% 
+  group_by(ano, grupo) %>% 
+  summarise(
+    across(sal_hora:sm_hora, mean, .names = "{.col}_med")
+  ) 
+
+df_rais_summary %>%
+  ggplot() +
+  geom_line(
+    aes(x = ano, y = sal_hora_med, color = factor(grupo))
+  ) +
+  geom_vline(xintercept = 2010, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 2011, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 2014, color = "blue", linetype = "dashed") +
+  theme_classic()
+
+
+df_rais_summary %>%
+  ggplot() +
+  geom_line(
+    aes(x = ano, y = log(sal_hora_med), color = factor(grupo))
+  ) +
+  geom_vline(xintercept = 2010, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 2011, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 2014, color = "blue", linetype = "dashed") +
+  theme_classic()
+
+
+df_rais_summary %>%
+  group_by(grupo) %>% 
+  mutate(
+    d_sal_med = sal_hora_med - lag(sal_hora_med, 1)
+  ) %>% 
+  na.omit() %>% 
+  ggplot() +
+  geom_line(
+    aes(x = ano, y = d_sal_med, color = factor(grupo))
+  ) +
+  geom_vline(xintercept = 2010, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 2011, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 2014, color = "blue", linetype = "dashed") +
+  theme_classic()
+```
+
+
+# DiD
+
+## Por bairro
+
+### Setup
+
+Montar base
+```{r}
+df_rais <- readRDS(here("data/rds/rais_sp_0219_L4L5.RDS"))
+
+df_rais_bairro <- df_rais %>% 
+  filter(!is.na(bairros_sp)) %>%
+  filter(quantidade_horas_contratadas > 0 & valor_remuneracao_media > 0) %>% 
+  group_by(ano, tratado, distritos_sp, bairros_sp, sexo) %>% 
+  summarise(sal_hora = mean(sal_hora)) %>% 
+  mutate(sexo = sexo - 1) %>% 
+  mutate(id = 100000*as.numeric(distritos_sp) + 10*as.numeric(bairros_sp) + as.numeric(sexo))
+```
+
+Filtrar desbalanceados
+```{r}
+bairros_completos <- df_rais_bairro %>% 
+  group_by(id) %>% 
+  count() %>% 
+  ungroup() %>% 
+  filter(n == (2019-2001)) %>% 
+  pull(id)
+
+df_rais_bairro <- df_rais_bairro %>% 
+  filter(id %in% bairros_completos)
+
+#Check:
+df_rais_bairro %>% 
+  group_by(ano) %>% 
+  count()
+
+saveRDS(df_rais_bairro, here("data/rds/rais_sp_bairro.RDS"))
+
+remove(df_rais_bairro)
+
+df_rais_bairro <- readRDS(here("data/rds/rais_sp_bairro.RDS"))
+```
+
+
+### Giddyup!
+
+ATT
+```{r}
+att_1 <- att_gt(
+  data = df_rais_bairro,
+  yname = "sal_hora",
+  tname = "ano",
+  idname = "id",
+  gname = "tratado",
+  xformla = ~sexo,
+  #panel = F,
+  control_group = "notyettreated"
+)
+
+summary(att_1)
+
+ggdid(att_1)
+```
+
+ATE agregado
+```{r}
+did_es <- aggte(att_1, type = "dynamic")
+
+ggdid(did_es)
+```
+
+
+
+
+
+```{r}
+df_rais_distrito <- df_rais %>% 
+  filter(!is.na(distritos_sp)) %>%
+  filter(quantidade_horas_contratadas > 0 & valor_remuneracao_media > 0) %>% 
+  group_by(ano, data, distritos_sp) %>% 
+  summarise(sal_hora = mean(sal_hora)) %>% 
+  mutate(id = 10000*as.numeric(distritos_sp))
+  
+
+att_1 <- att_gt(
+  data = df_rais_distrito,
+  yname = "sal_hora",
+  tname = "ano",
+  idname = "id",
+  gname = "data"#,
+  #xformla = ~grau_instrucao,
+  #panel = F,
+  #control_group = "notyettreated"
+)
+
+att_2 <- att_gt(
+  data = df_rais_2,
+  yname = "sal_hora",
+  tname = "ano",
+  gname = "data",
+  #xformla = ~grau_instrucao,
+  panel = F,
+  control_group = "notyettreated"
+)
+```
+
+
+
+## Svydesign com cross section
+
+```{r}
+library(sampling)
+
+#df_rais <- readRDS(here("data/rds/rais_sp_0219_L4L5.RDS"))
+
+df_rais2 <- readRDS(here("data/rds/rais_sp_0219_L4L5.RDS")) %>% 
+  filter(quantidade_horas_contratadas > 0 & valor_remuneracao_media > 0)
+
+N_strata <- df_rais2 %>% 
+  select(ano, tratado, grau_instrucao) %>% 
+  table() %>% 
+  as.vector()
+
+n_strata <- ceiling(0.05*N_strata)
+
+i_aess <- strata(
+  df_rais2,
+  stratanames = c("ano", "tratado", "grau_instrucao"),
+  size = n_strata,
+  method = "srswor"
+)
+
+df_aess <- getdata(df, i_aess),
+```
+

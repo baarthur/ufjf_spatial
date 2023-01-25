@@ -1,0 +1,18 @@
+---
+title: "Notas - aula 12"
+author: 
+  - name: "Arthur Bazolli Alvarenga"
+    affiliations: 
+      - "PPGE/UFJF" 
+  - name: "Prof.ª Rosa Lívia Montenegro"
+    affiliation: "PPGE/UFJF"
+---
+
+Esta nota de aula é baseada no capítulo 7 de @osullivan2012.
+
+
+
+
+
+
+# Referências

@@ -1,0 +1,160 @@
+---
+title: "Brincando com a RAIS"
+author: "Arthur Bazolli"
+format: html
+---
+
+# Setup
+
+```{r}
+#| label: setup
+
+library(here)
+library(tidyverse)
+library(basedosdados)
+
+set_billing_id("multivariada-sp")
+```
+
+```{r}
+#| label: download_rais_teste
+query_rais_0515 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND (ano=2005 OR ano=2007 OR ano=2009 OR ano=2011 OR ano=2013 OR ano=2015) AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0071' OR distritos_sp='0090')"
+
+basedosdados::download(query_rais_0515, path = here("data/df_rais_sp_0515.csv"))
+```
+
+```{r}
+#| label: download_rais_0715
+
+query_rais_05 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2005 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_05, path = here("data/df_rais_sp_05.csv"))
+
+
+query_rais_06 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2006 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_06, path = here("data/df_rais_sp_06.csv"))
+
+
+query_rais_07 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2007 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_07, path = here("data/df_rais_sp_07.csv"))
+
+
+query_rais_08 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2008 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_08, path = here("data/df_rais_sp_08.csv"))
+
+
+query_rais_09 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2009 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_09, path = here("data/df_rais_sp_09.csv"))
+
+
+query_rais_10 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2010 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_10, path = here("data/df_rais_sp_10.csv"))
+
+
+query_rais_11 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2011 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_11, path = here("data/df_rais_sp_11.csv"))
+
+
+query_rais_12 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2012 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_12, path = here("data/df_rais_sp_12.csv"))
+
+
+query_rais_13 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2013 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_13, path = here("data/df_rais_sp_13.csv"))
+
+
+query_rais_14 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2014 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_14, path = here("data/df_rais_sp_14.csv"))
+
+
+query_rais_15 <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_vinculos` WHERE id_municipio='3550308' AND ano=2015 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_15, path = here("data/df_rais_sp_15.csv"))
+```
+
+
+```{r}
+#| label: read_rais_0515
+
+df_rais <- read_csv(here("data/df_rais_sp_0515.csv"))
+```
+
+
+
+
+```{r}
+#| label: read_rais
+df_rais_teste <- read_csv(here("data/df_rais_sp_teste.csv"))
+
+ls <- here("data") %>% 
+  list.files(pattern = "df_rais_sp_(\\d+)(\\d+).csv", full.names = T)
+
+df_rais_0715 <- ls[1:6] %>% 
+  map_df(~read_csv(.))
+
+df_rais_0715 <- ls[7] %>% 
+  map_df(~read_csv(.)) %>% 
+  mutate(cnae_1 = as.character(cnae_1)) %>% 
+  rbind(df_rais_0715)
+
+df_rais_0715 <- ls[8:9] %>% 
+  map_df(~read_csv(.)) %>% 
+  rbind(df_rais_0715)
+
+df_rais_0715 <- ls[10] %>% 
+  map_df(~read_csv(.)) %>% 
+  mutate(cnae_1 = as.character(cnae_1)) %>% 
+  rbind(df_rais_0715)
+
+df_rais_0715 <- ls[11] %>% 
+  map_df(~read_csv(.)) %>% 
+  rbind(df_rais_0715)
+
+df_rais_0715 <- df_rais_0715 %>% 
+  mutate(sm_hora = valor_remuneracao_media_sm/quantidade_horas_contratadas) %>% 
+  arrange(ano)
+
+df_rais_teste <- df_rais_teste %>% 
+  mutate(sm_hora = valor_remuneracao_media_sm/quantidade_horas_contratadas) %>% 
+  arrange(ano)
+```
+
+```{r}
+#| label: read_distritos
+
+distritos <- readxl::read_excel(here("data/distritos_sp.xlsx")) %>% 
+  replace(is.na(.),0) %>% 
+  filter(L4 == 1 | L5x == 1) %>% 
+  select(cod_ibge, distrito, L4) %>% 
+  mutate(distritos_sp = paste0("00", cod_ibge))
+```
+
+```{r}
+#| label: rais_distritos
+
+df_rais <- distritos %>% 
+  select(distritos_sp, L4) %>% 
+  left_join(df_rais_0515)
+
+df_rais %>% 
+  group_by(ano, L4) %>% 
+  summarise(sm_hora = mean(sm_hora)) %>%
+  group_by(L4) %>% 
+  #mutate(sm_lag = sm_hora - lag(sm_hora, 1)) %>% 
+  #na.omit() %>% 
+  ggplot() +
+  geom_point(
+    aes(x = ano, y = sm_hora, color = factor(L4))
+  ) +
+  theme_classic()
+```
+

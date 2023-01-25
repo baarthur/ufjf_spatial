@@ -1,0 +1,57 @@
+---
+title: "Brincando com a RAIS"
+author: "Arthur Bazolli"
+format: html
+---
+
+# Setup
+
+```{r}
+#| label: setup
+
+library(here)
+library(tidyverse)
+library(basedosdados)
+
+set_billing_id("multivariada-sp")
+```
+
+```{r}
+#| label: download_rais_teste
+query_rais_teste <- "SELECT ano, vinculo_ativo_3112, tipo_admissao, mes_admissao, mes_desligamento, quantidade_horas_contratadas, valor_remuneracao_media_sm, cbo_2002, cnae_1, faixa_etaria, idade, grau_instrucao_1985_2005, grau_instrucao_apos_2005, tamanho_estabelecimento, tipo_estabelecimento, natureza_juridica, indicador_simples, bairros_sp, distritos_sp FROM `basedosdados.br_me_rais.microdados_estabelecimentos` WHERE id_municipio='3550308' AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(query_rais_teste, path = here("data/df_rais_sp_teste.csv"))
+```
+
+```{r}
+#| label: download_rais_0715
+
+rais_stab_02 <- "SELECT ano, quantidade_vinculos_clt, tamanho, tipo, indicador_simples, indicador_atividade_ano, cnae_1, cnae_2, cnae_2_subclasse, cep, bairros_sp, distritos_sp, FROM `basedosdados.br_me_rais.microdados_estabelecimentos` WHERE id_municipio='3550308' AND ano=2002 AND (distritos_sp='0012' OR distritos_sp='0026' OR distritos_sp='0045' OR distritos_sp='0054' OR distritos_sp='0062' OR distritos_sp='0066' OR distritos_sp='0094' OR distritos_sp='0015' OR distritos_sp='0017' OR distritos_sp='0019' OR distritos_sp='0032' OR distritos_sp='0035' OR distritos_sp='0046' OR distritos_sp='0077' OR distritos_sp='0083') LIMIT 1000"
+
+basedosdados::download(rais_stab_02, path = here("data/df_rais_stab_02.csv"))
+```
+
+
+```{r}
+df_iptu <- read_csv2("data/IPTU_2019.csv")
+
+library(survey)
+library(sampling)
+
+i <- srswor(34471, nrow(df_iptu))
+df_sample <- getdata(df_iptu, i)
+
+fpc <- rep(nrow(df_iptu), nrow(df_sample))
+plano <- svydesign(~1, data = df_sample, fpc = fpc)
+```
+
+
+
+```{r}
+a <- tibble(
+  tipo = factor(df_sample$`TIPO DE USO DO IMOVEL`)
+)
+
+levels(a$tipo)
+```
+

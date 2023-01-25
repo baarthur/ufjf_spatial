@@ -1,0 +1,316 @@
+---
+title: "Projeto"
+subtitle: "Proposta de artigo - Econometria Espacial Aplicada"
+author: "Arthur Bazolli Alvarenga"
+institute: "Universidade Federal de Juiz de Fora (UFJF)"
+date: "25/01/2022"
+
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    lib_dir: libs
+    nature:
+      highlightStyle: arta
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+
+includes:
+  after_body: src/insert-logo.html
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+options(
+  htmltools.dir.version  = FALSE,
+  htmltools.preserve.raw = FALSE # needed for windows
+)
+
+knitr::opts_chunk$set(
+  cache = TRUE,
+  echo = FALSE,
+  error = FALSE,
+  include = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dev = "svg",
+  fig.retina = TRUE,
+  fig.width = 10,
+  fig.height = 5,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(icons)
+library(here)
+
+library(sf)
+
+library(tmap)
+library(DT)
+
+#icons::download_fontawesome()
+
+tmap_mode("view")
+tmap_options(check.and.fix = TRUE,
+             basemaps = c("Esri.WorldImagery", "OpenStreetMap", "Esri.WorldGrayCanvas"))
+
+# xaringanExtra::use_logo(
+#   image_url = here("src/ufjf.png")
+# )
+```
+
+
+# Introdução
+
+## Motivação
+
+### O que move as cidades?
+
+- Cidades são mercados de trabalho
+- Transporte encurta distâncias $\rightarrow$ economias de aglomeração
+
+> É fato que infraestrutura pode alavancar produtividade. Mas **quanto**? E o metrô em especial?
+
+
+---
+
+# Motivação
+
+### Se metrô é tão produtivo, por que não construímos mais?
+
+- Restrição fiscal
+- Benefícios **diretos**
+  + Menor tempo de deslocamento
+- Custos **diretos**
+  + Capex: bilhões!
+  + Opex: costuma ser mais caro
+- Benefícios difusos
+  + Problema inerente às externalidades!
+  + $\downarrow$ Cansaço $\rightarrow$ $\uparrow$ produtividade (?)
+  + $\uparrow$ Área do mercado de trabalho $\rightarrow$ economias de aglomeração $\uparrow$ salários
+  + Menor poluição
+  + Menos acidentes $\rightarrow$ menos gastos com saúde, via $G$ (SUS) e $C$
+  
+----
+
+> Estabelecer uma análise de impacto **crível** é um passo para defender que esses investimentos se pagam
+
+
+---
+
+# Objetivo
+
+<br><br><br><br><br><br>
+- Seria impossível estimar todos os benefícios.
+<br><br>
+- Em vez disso, focar na **produtividade**: acessibilidade aumenta $PMgL$?
+<br><br>
+- Estimar elasticidade
+
+
+---
+
+# Teoria e hipóteses
+
+## Modelo causal
+
+### Mundo perfeito
+- $\Delta$ Acessibilidade $\rightarrow$ $\Delta$ ecn. aglomeração $\rightarrow$ $\Delta$ salários
+
+#### Canais de transmissão
+- $\Delta$ Acessibilidade $\rightarrow$ $\uparrow L^s \rightarrow$ especialização
+- $\Delta$ Acessibilidade $\rightarrow$ $\uparrow$ interações $\rightarrow$ inovações
+
+
+---
+
+# Teoria e hipóteses
+
+## (Alguns) problemas
+
+.pull-left[
+### Confundidores
+- $\Delta$ Acessibilidade $\rightarrow$ $\Delta$ diferencial local $\rightarrow$ $\Delta$ valor da terra $\rightarrow$ $\Delta$ atividades especializadas com salário maior
+- Mudanças no **plano diretor** mais ou menos na mesma época.
+
+### SUTVA
+- Muito difícil sustentar a hipótese
+- Natureza de rede: nova linha na região $i$ facilita acesso à região $j$!
+- Efeito se propaga, por definição.
+- Onde começa e onde termina?
+]
+
+.pull-right[
+### Viés de seleção
+- Corredor que recebe metrô provavelmente é produtivo
+- Superestima ganhos, se o controle for toda a cidade
+![](src/images/spider.webp)
+]
+
+
+---
+
+# Estratégia de identificação
+
+## Contrafactual
+- Se o corredor $i$ não tivesse ganhado estações, como teriam evoluído os salários?
+- Importante usar como **controle** unidades **similares** às tratadas (Castro, Almeida e Lima, 2021)
+- Callaway e Sant'Anna (2021): em vez de tratados *vs.* não tratados, por que não tratados *vs.* **ainda** não tratados?
+  + Grupo de controle varia no tempo
+  + $ATT(g,t) = \mathbb{E}[Y_t - Y_{g-1} | G = g] - \mathbb{E}[Y_t - Y_{g-1} |D_t = 0, G \neq g]$
+  
+## *How to get away with SUTVA*
+- Modelagem espacial: SDiD (Chagas *et al.*, 2016)
+- Matriz de vizinhos capta efeitos de transbordamento
+
+## Controles
+- Sexo, cor, nível de instrução --- RAIS
+
+---
+
+# Estratégia de identificação
+
+- Região $i$ recebe estação em 2011
+  + Até 2010: grupo controle
+  + 2010 em diante: grupo de tratamento
+
+```{r, eval=FALSE, include=FALSE}
+source(here("src/0_functions.R"))
+
+shp_linhas_metro <- shp_extract_read(
+  "data/shp/SIRGAS_SHP_linhametro.zip" %>%  here(),
+  "SIRGAS_SHP_linhametro_line.shp", 
+  crs = 31983
+  ) %>% 
+  rename(operador = lmt_empres, linha_nome = lmt_nome, linha_numero = lmt_linha) %>% 
+  arrange(linha_numero)
+
+shp_estacoes_metro <- shp_extract_read(
+  "data/shp/SIRGAS_SHP_estacaometro.zip" %>% here(),
+  "SIRGAS_SHP_estacaometro_point.shp",
+  crs = 31983) %>% 
+  rename(operador = emt_empres, status = emt_situac, linha_nome = emt_linha, estacao_nome = emt_nome)
+
+saveRDS(shp_linhas_metro, here("data/rds/shp_linhas_metro"))
+saveRDS(shp_estacoes_metro, here("data/rds/shp_estacoes_metro"))
+```
+
+```{r}
+shp_linhas_metro <- readRDS(here("data/rds/shp_linhas_metro"))
+shp_estacoes_metro <- readRDS(here("data/rds/shp_estacoes_metro"))
+
+mapa_linhas <- tm_shape(shp_linhas_metro %>% filter(linha_numero == 1)) +
+  tm_lines(col = "#0153a0", lwd = 2) +
+  tm_shape(shp_linhas_metro %>% filter(linha_numero == 2)) +
+  tm_lines(col = "#008061", lwd = 2) +
+  tm_shape(shp_linhas_metro %>% filter(linha_numero == 3)) +
+  tm_lines(col = "#ee3e34", lwd = 2) +
+  tm_shape(shp_linhas_metro %>% filter(linha_numero == 4)) +
+  tm_lines(col = "#fed304", lwd = 2) +
+  tm_shape(shp_linhas_metro %>% filter(linha_numero == 5)) +
+  tm_lines(col = "#784d9f", lwd = 2) +
+  tm_shape(shp_linhas_metro %>% filter(linha_numero == 15)) +
+  tm_lines(col = "#858d90", lwd = 2)
+
+mapa_estacoes <- tm_shape(shp_estacoes_metro %>% filter(linha_nome == "AZUL") %>% st_buffer(800)) +
+  tm_bubbles(col = "#0153a0", alpha = 0.5) +
+  tm_shape(shp_estacoes_metro %>% filter(linha_nome == "VERDE") %>% st_buffer(800)) +
+  tm_bubbles(col = "#008061", alpha = 0.5) +
+  tm_shape(shp_estacoes_metro %>% filter(linha_nome == "VERMELHA") %>% st_buffer(800)) +
+  tm_bubbles(col = "#ee3e34", alpha = 0.5) +
+  tm_shape(shp_estacoes_metro %>% filter(linha_nome == "AMARELA") %>% st_buffer(800)) +
+  tm_bubbles(col = "#fed304", alpha = 0.5) +
+  tm_shape(shp_estacoes_metro %>% filter(linha_nome == "LILAS") %>% st_buffer(800)) +
+  tm_bubbles(col = "#784d9f", alpha = 0.5) +
+  tm_shape(shp_estacoes_metro %>% filter(linha_nome == "PRATA") %>% st_buffer(800)) +
+  tm_bubbles(col = "#858d90", alpha = 0.5) +
+  tm_shape(shp_estacoes_metro) +
+  tm_dots()
+
+mapa_linhas +
+  mapa_estacoes
+```
+
+
+
+---
+
+# Base de dados
+
+<br><br><br><br>
+## Trabalhadores: 
+- RAIS identificada
+- Identificar ganhos de salários para trabalhadores perto das estações
+
+## Estações de metrô e zoneamento:
+- Geosampa
+
+
+---
+
+# Levantamento preliminar
+
+## Estimação ingênua
+
+- Rais **não** identificada: variáveis `bairros_sp` e `distritos_sp`
+- *De longe, não parece muito bom...*
+```{r, out.width="80%"}
+knitr::include_graphics(here("src/images/wage_naive.svg"))
+```
+
+
+---
+
+# Levantamento preliminar
+
+## Estimação ingênua
+
+- ...*de perto, parece que está de longe.*
+- Estimação via pacote `{did}` de Callaway e Sant'Anna (2021)
+```{r, out.width="80%"}
+knitr::include_graphics(here("src/images/ggdid_1.svg"))
+```
+
+
+---
+
+# Levantamento preliminar
+
+## Estimação ingênua
+
+- Erros-padrão elevados
+- MAUP, SUTVA e vários outros problemas --- é só um *piloto*!
+```{r, out.width="80%"}
+knitr::include_graphics(here("src/images/ggdid_avg.svg"))
+```
+
+---
+
+
+# Obrigado!
+
+<br><br><br><br>
+
+.pull-center[
+
+### Arthur Bazolli Alvarenga
+
+<a href="mailto:arthur.bazolli@estudante.ufjf.br">
+`r icons::fontawesome("paper-plane")` arthur.bazolli@estudante.ufjf.br
+</a>
+
+<a href="http://twitter.com/baarthur0">
+`r icons::fontawesome("twitter")` @baarthur0
+</a>
+
+<a href="http://github.com/baarthur">
+`r icons::fontawesome("github")` @baarthur
+</a>
+
+]
+
+
+
+
+
+

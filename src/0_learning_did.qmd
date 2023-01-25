@@ -1,0 +1,33 @@
+---
+title: "Learnind DiD"
+---
+
+
+```{r}
+#| label: setup
+
+library(did)
+library(here)
+library(tidyverse)
+```
+
+
+```{r}
+base <- data(mpdta)
+
+head(mpdta)
+```
+
+
+```{r}
+mw.attgt <- att_gt(yname = "lemp",
+                   gname = "first.treat",
+                   idname = "countyreal",
+                   tname = "year",
+                   xformla = ~1,
+                   data = mpdta,
+                   )
+
+summary(mw.attgt)
+```
+

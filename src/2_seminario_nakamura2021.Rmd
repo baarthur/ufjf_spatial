@@ -1,0 +1,255 @@
+---
+title: "Spatial distributions of job accessibility, housing rents, and poverty: The case of Nairobi"
+subtitle: "Seminário de Econometria Espacial Aplicada"
+date: "2023-01-18"
+author: "Shohei Nakamura e Paolo Avner (2021)"
+thanks: "Apresentador: Arthur Alvarenga"
+logo: yaml/ufjf.png
+
+lang: pt-BR
+
+output: 
+  beamer_presentation:
+    theme: Frankfurt
+    colortheme: orchid
+    slide_level: 3
+    # toc: true
+    # number_sections: true
+    keep_tex: true
+
+classoption: "aspectratio=169"
+---
+
+## Introdução
+
+
+### Motivação
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  echo = FALSE,
+  error = FALSE,
+  include = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dev = "svg",
+  fig.retina = TRUE,
+  fig.width = 10,
+  fig.height = 5,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(knitr)
+library(here)
+
+library(DT)
+
+#icons::download_fontawesome()
+```
+
+**Acessibilidade**
+
+- Acesso a oportunidades $\rightarrow$ match no mercado de trabalho $\rightarrow$ economias de aglomeração
+- Acessibilidade limitada reduz essas oportunidades
+- Mais pobres são mais afetados?
+  + Aprofunda desigualdades
+
+
+**Mercado imobiliário**
+
+- Oferta limitada em locais com boa acessibilidade
+- *Tradeoff*: morar perto ou morar bem?
+
+
+
+### Problemas de pesquisa
+
+1. Explorar padrões de acesso ao emprego
+  + Construir **índices** de acessibilidade
+  + Residência formal/informal, qualificação e renda
+
+2. Analisar o tradeoff no mercado imobiliário
+  + Modelo hedônico residencial
+  + Identificar **prêmio** de mercado da acessibilidade
+
+
+
+### Objeto de pesquisa
+
+\begin{columns}
+
+\column{0.5\textwidth}
+
+\textbf{Nairobi}
+
+\begin{itemize}
+  \item{Capital do Quênia}
+  \item{População:}
+    \begin{itemize}
+      \item{5 milhões na Região Metropolitana}
+      \item{4,4 na cidade}
+      \item{Destes, 1 milhão em moradias informais}
+    \end{itemize}
+\end{itemize}
+
+\column{0.5\textwidth}
+```{r survey, out.width="70%", fig.cap="\\label{fig:survey1} Mapa de residências entrevistadas e assentamentos informais. Fonte: Nakamura e Avner (2021)"}
+here("src/images/1_survey.png") %>% 
+  include_graphics()
+```
+\end{columns}
+
+
+
+## Metodologia
+
+### Acessibilidade
+
+\begin{definition}
+Número de oportunidades (no caso, de emprego) que um indivíduo pode atingir dado um tempo máximo de deslocamento 
+\end{definition}
+
+\begin{equation}
+JAI_i = \frac{\sum_j O_j \cdot (t_{ij} < \bar{t})}{\sum_j O_j}
+\end{equation}
+
+\begin{equation}
+\bar{JAI} = \frac{\sum_i n_i \cdot [\sum_j O_j \cdot (t_{ij} < \bar{t})]}{\sum_i n_i \cdot \sum_j O_j}
+\end{equation}
+
+
+
+### Modelo Hedônico
+
+\begin{equation}
+ln(aluguel_i) = \alpha + \beta_1 JAI_i + \beta_2 X_i + \varepsilon_i
+\end{equation}
+
+- Observação $i$: residência entrevistada
+- $aluguel$: valores mensais em Xelins Quenianos (KSh)
+- $JAI_i$: acessibilidade (% do total de empregos) da residência $i$
+- $X_i$: vetor de controles
+  + estrutura da residência, acesso a serviços, fatores ambientais e de vizinhança
+  
+
+
+### Modelagem Espacial
+
+- Base: OLS
+- Robustez: modelos espaciais
+  + Modelo generalizado em dois estágios robusto à heterocedasticidade (GSTSLS-HET)
+  + Erro espacial (SEM) e completo (SARAR/SAC) via MV
+- Matriz de pesos espaciais: distância **inversa** entre todas as residências
+
+
+
+
+## Dados
+
+### Transporte
+
+1. Transporte coletivo
+  - Rede de microônibus (*matatus*)
+  - Itinerários em *GTFS*
+  - Algoritmo calcula tempo da casa até o ponto de ônibus
+2. De carro
+  - Rede viária do OpenStreetMap (**OSM**)
+  - Velocidades de acordo com tipo da via e consistentes com congestionamento
+3. A pé
+  - Rede do OSM
+  - Velocidade média de 4 km/h
+
+
+
+### Empregos
+
+**Fonte**
+
+- Pesquisa da *Japan International Cooperation Agency* (**JICA**)
+- Data: 2013
+
+**Alguns itens do questionário**
+
+- Ocupação do respondente
+- Setor de emprego
+- Localização **aproximada** do trabalho no setor censitário
+
+> Os cetores censitários vão de 0,12 $km^2$ a 58,5 $km^2$. Para atingir uma distribuição mais desagregada, os autores usaram uma grade de células de 1 $km^2$. A população e o emprego foram atribuídos em proporção à área de cada célula que cruzava com o setor censitário.
+
+
+
+### Questionamento
+
+- Setores censitários $\rightarrow$ MAUP!
+- Interpolação consegue contornar o problema?
+- Premissa: empregos e residências distribuídos homogeneamente nos setores
+  - Pode valer no centro (setores menores), mas e na periferia?
+- Dada a **escassez** de informação, parece a melhor alternativa
+
+
+
+### Residências
+
+**Fonte**
+
+- Cities Baseline Survey (**CBS**) do governo queniano
+- Data: 2013
+- Amostra: 1.182 residências, sendo 582 informais e 989 das famílias alugam o imóvel
+
+**Desenho da pesquisa**
+
+- Amostra estratificada por conglomerados
+- Estágios:
+  1. Seleção de áreas de enumeração (AEs) do censo de acordo com o estrato (urbana, periurbana ou rural)
+  2. Seleção de residências dentro das AEs sorteadas, $n$ fixo $\forall$ AE
+
+
+
+
+## Resultados
+
+### Acesso ao emprego
+
+\begin{columns}
+
+\column{0.5\textwidth}
+\begin{itemize}
+  \item{Acessibilidade maior nas áreas centrais}
+  \item{Por modo (intervalos: 30, 45 e 60 minutos)}
+    \begin{itemize}
+      \item{A pé: 2%, 4% e 7%}
+      \item{De Matatus: 4%, 11% e 24%}
+      \item{De carro: 44%, 72% e 89%}
+    \end{itemize}
+\end{itemize}
+
+\column{0.5\textwidth}
+```{r access, out.width:"35%", fig.cap="\\label{fig:access1} Oportunidades acessíveis em 60 minutos. Fonte: Nakamura e Avner (2021)"}
+here("src/images/4_access.png") %>% 
+  include_graphics()
+```
+\end{columns}
+
+
+
+### Acesso ao emprego
+
+
+
+
+
+
+## Conclusão
+
+Dolor
+
+
+
+
+## Obrigado!
+
+Sit amet
+
+

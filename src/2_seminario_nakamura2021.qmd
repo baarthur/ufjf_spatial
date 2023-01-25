@@ -1,0 +1,22 @@
+---
+title: "Spatial distributions of job accessibility, housing rents, and poverty: The case of Nairobi"
+subtitle: "Seminário de Econometria Espacial Aplicada"
+date: "2023-01-18"
+author: "Shohei Nakamura e Paolo Avner (2021)"
+thanks: "Apresentador: Arthur Alvarenga"
+logo: yaml/ufjf.png
+
+format: 
+  beamer:
+    aspectratio: 169
+    theme: Frankfurt
+    colortheme: orchid
+
+header-includes:
+  - \setbeamertemplate{footline}[frame number] 
+---
+
+## Introdução
+
+- Lorem ipsum
+- Dolor sit amet
